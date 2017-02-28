@@ -17,8 +17,8 @@ class Meal: NSObject, NSCoding {
     
     //Archiving Paths
     
-    static let DocumentDirectory = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains:.UserDomainMask).first!
-    static let ArchiveUrl = DocumentDirectory.URLByAppendingPathComponent("meals")
+    static let DocumentDirectory = FileManager.default.urls(for: .documentDirectory, in:.userDomainMask).first!
+    static let ArchiveUrl = DocumentDirectory.appendingPathComponent("meals")
     
     //MARK:- Types
     
@@ -48,20 +48,20 @@ class Meal: NSObject, NSCoding {
     
     //MARK:- NSCoder
     //持久化数据
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(name, forKey: PropertyType.name)
-        aCoder.encodeObject(photo, forKey: PropertyType.photo)
-        aCoder.encodeObject(rating, forKey: PropertyType.rating)
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(name, forKey: PropertyType.name)
+        aCoder.encode(photo, forKey: PropertyType.photo)
+        aCoder.encode(rating, forKey: PropertyType.rating)
     }
     
     required convenience init?(coder aDecoder: NSCoder) {
-        guard let name = aDecoder.decodeObjectForKey(PropertyType.name) as? String else {
+        guard let name = aDecoder.decodeObject(forKey: PropertyType.name) as? String else {
             print("Unable to decode the name for a Meal object")
             return nil
         }
         
-        let photo = aDecoder.decodeObjectForKey(PropertyType.photo) as? UIImage
-        let rating = aDecoder.decodeObjectForKey(PropertyType.rating) as? Int
+        let photo = aDecoder.decodeObject(forKey: PropertyType.photo) as? UIImage
+        let rating = aDecoder.decodeObject(forKey: PropertyType.rating) as? Int
         
         self.init(name: name, photo: photo, rating: rating!)
     }

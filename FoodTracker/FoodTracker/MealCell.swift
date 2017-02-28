@@ -20,7 +20,7 @@ class MealCell: UITableViewCell {
     override func awakeFromNib() {
          super.awakeFromNib()
         
-        ratingControl.userInteractionEnabled = false
+        ratingControl.isUserInteractionEnabled = false
         
     }
     

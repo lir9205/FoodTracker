@@ -40,39 +40,39 @@ class MealEditViewController: UIViewController, UITextFieldDelegate, UIImagePick
     
     //MARK:- UITextFieldDelegate
     
-    func textFieldDidBeginEditing(textField: UITextField) {
-        saveButton.enabled = false
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        saveButton.isEnabled = false
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         updateSaveButtonState()
         navigationItem.title = textField.text
     }
     
     //MARK:- UIImagePickerControllerDelegate
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         
         photoImageView.image = image
         
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dismissViewControllerAnimated(true, completion: nil)
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
     }
     
     //MARK:- Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        super.prepareForSegue(segue, sender: sender)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
         
-        guard let button = sender as? UIBarButtonItem  where button === saveButton else {
+        guard let button = sender as? UIBarButtonItem, button === saveButton else {
             print("The save button was pressed, cancelling")
             return
         }
@@ -87,13 +87,13 @@ class MealEditViewController: UIViewController, UITextFieldDelegate, UIImagePick
     }
     
 
-    @IBAction func cancel(sender: UIBarButtonItem) {
+    @IBAction func cancel(_ sender: UIBarButtonItem) {
         
         let isPresentingInAddMealMode = presentingViewController is UINavigationController
         if isPresentingInAddMealMode {
-            dismissViewControllerAnimated(true, completion: nil)
+            dismiss(animated: true, completion: nil)
         } else if let owningNavigationController = navigationController {
-            owningNavigationController.popViewControllerAnimated(true)
+            owningNavigationController.popViewController(animated: true)
         } else {
             fatalError("The MealDetailViewController is not inside a navigation controller")
         }
@@ -102,23 +102,23 @@ class MealEditViewController: UIViewController, UITextFieldDelegate, UIImagePick
     
     //MARK:- Actions
     
-    @IBAction func selectImageFromPhotoLibrary(sender: UITapGestureRecognizer) {
+    @IBAction func selectImageFromPhotoLibrary(_ sender: UITapGestureRecognizer) {
     
         nameTextField.resignFirstResponder()
         
         let imagePickerController = UIImagePickerController()
-        imagePickerController.sourceType = .PhotoLibrary
+        imagePickerController.sourceType = .photoLibrary
         imagePickerController.delegate = self
         
-        presentViewController(imagePickerController, animated: true, completion: nil)
+        present(imagePickerController, animated: true, completion: nil)
         
     }
     
     //MARK:- Private Methods
     
-    private func updateSaveButtonState() {
+    fileprivate func updateSaveButtonState() {
         let text = nameTextField.text ?? ""
-        saveButton.enabled = !text.isEmpty
+        saveButton.isEnabled = !text.isEmpty
     }
     
 }

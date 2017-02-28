@@ -11,7 +11,7 @@ import UIKit
 @IBDesignable class RatingControl: UIStackView {
 
     //MARK:- Properties
-    private var ratingButtons = [UIButton]()
+    fileprivate var ratingButtons = [UIButton]()
     var rating = 0 {
         didSet {
             updateButtonSelectionStates()
@@ -19,7 +19,7 @@ import UIKit
     }
     
     
-    @IBInspectable var starSize: CGSize = CGSizeMake(40, 40) {
+    @IBInspectable var starSize: CGSize = CGSize(width: 40, height: 40) {
         didSet {
             setupButtons()
         }
@@ -34,21 +34,19 @@ import UIKit
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        let bundle = NSBundle(forClass: self.dynamicType)
-        _ = UINib(nibName: String(RatingControl), bundle: bundle)
+       
         setupButtons()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    
+    required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        let bundle = NSBundle(forClass: self.dynamicType)
-        _ = UINib(nibName: String(RatingControl), bundle: bundle)
         setupButtons()
     }
     
     //MARK:- Private Methods
     
-    private func setupButtons() {
+    fileprivate func setupButtons() {
         
         for button in ratingButtons {
             removeArrangedSubview(button)
@@ -57,30 +55,30 @@ import UIKit
         
         ratingButtons.removeAll()
         
-        let bundle = NSBundle(forClass: self.dynamicType)
+        let bundle = Bundle(for: type(of: self))
         
-        let filedStar = UIImage(named: "rate-s", inBundle: bundle, compatibleWithTraitCollection: self.traitCollection)
-        let emptyStar = UIImage(named: "rate-n", inBundle: bundle, compatibleWithTraitCollection: self.traitCollection)
-        let highlighedStar = UIImage(named: "rate-s", inBundle: bundle, compatibleWithTraitCollection: self.traitCollection)
+        let filedStar = UIImage(named: "rate-s", in: bundle, compatibleWith: self.traitCollection)
+        let emptyStar = UIImage(named: "rate-n", in: bundle, compatibleWith: self.traitCollection)
+        let highlighedStar = UIImage(named: "rate-s", in: bundle, compatibleWith: self.traitCollection)
         
         for index in 0..<starCount {
             let button = UIButton()
 
-            button.setImage(emptyStar, forState: .Normal)
-            button.setImage(filedStar, forState: .Selected)
-            button.setImage(highlighedStar, forState: .Highlighted)
-            button.setImage(highlighedStar, forState: [.Highlighted,.Selected])
+            button.setImage(emptyStar, for: UIControlState())
+            button.setImage(filedStar, for: .selected)
+            button.setImage(highlighedStar, for: .highlighted)
+            button.setImage(highlighedStar, for: [.highlighted,.selected])
             //UIStackView 会自动定义button的位置，我们需要添加约束来定义button的大小
             //translatesAutoresizingMaskIntoConstraints 表示是否自动生成约束，当你使用程序初始化一个View时，它的 translatesAutoresizingMaskIntoConstraints 属性默认是 true，当不需要时可设为 false。
             //在这里可以不用手动设为false，因为往stackView上天剑View，stackView会自动将translatesAutoresizingMaskIntoConstraints设置为false。当使用自动布局的时候，将translatesAutoresizingMaskIntoConstraints设置为false是一个良好的习惯。
             button.translatesAutoresizingMaskIntoConstraints = false
-            button.widthAnchor.constraintEqualToConstant(starSize.width).active = true
-            button.heightAnchor.constraintEqualToConstant(starSize.height).active = true
+            button.widthAnchor.constraint(equalToConstant: starSize.width).isActive = true
+            button.heightAnchor.constraint(equalToConstant: starSize.height).isActive = true
             
             //添加附加标签
             button.accessibilityLabel  = "Set \(index + 1) star rating"
             
-            button.addTarget(self, action: #selector(ratingButtonTapped), forControlEvents:UIControlEvents.TouchUpInside)
+            button.addTarget(self, action: #selector(ratingButtonTapped), for:UIControlEvents.touchUpInside)
             addArrangedSubview(button)
             
             ratingButtons.append(button)
@@ -91,10 +89,10 @@ import UIKit
     
     //MARK:- Button Action
     
-    func ratingButtonTapped(button: UIButton) {
+    func ratingButtonTapped(_ button: UIButton) {
         print("button tapped")
         
-        guard let index = ratingButtons.indexOf(button) else {
+        guard let index = ratingButtons.index(of: button) else {
             fatalError("The button, \(button) is not in the ratingButtons array: \(ratingButtons)")
         }
         
@@ -112,9 +110,9 @@ import UIKit
     }
     
     func updateButtonSelectionStates() {
-        for (index, button) in ratingButtons.enumerate() {
+        for (index, button) in ratingButtons.enumerated() {
            
-            button.selected =  index < rating
+            button.isSelected =  index < rating
             
             let hintString: String?
             if rating == index + 1 {
